@@ -14,14 +14,17 @@
         android:layout_weight="0.5"
         android:background="#555555"
         android:layout_marginBottom="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:gravity="center">
         <TextView
             android:id="@+id/blackTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#ffffff"
-            android:text="05:00"
-            android:textSize="30dp"
+            android:text="24:59:59"
+            android:textSize="80dp"
             android:rotation="180"/>
     </LinearLayout>
     <LinearLayout
@@ -31,13 +34,16 @@
         android:layout_weight="0.5"
         android:background="#555555"
         android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
         android:gravity="center">
         <TextView
             android:id="@+id/whiteTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#ffffff"
-            android:text="05:00"
-            android:textSize="30dp"/>
+            android:text="24:59:59"
+            android:textSize="80dp"/>
     </LinearLayout>
 </LinearLayout>
