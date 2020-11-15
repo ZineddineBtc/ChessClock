@@ -7,60 +7,45 @@ import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     LinearLayout whiteLL, blackLL;
     TextView whiteTV, blackTV;
     CountDownTimer whiteTimer, blackTimer;
-    long whiteTimeLeft, blackTimeLeft;
-    boolean whitePaused, blackPaused;
+    long whiteTime=70000, blackTime=70000, whiteTimeLeft, blackTimeLeft;
+    boolean timeStarted, whiteBlack; // white=0, black=1
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        whiteTimeLeft = whiteTime;
+        blackTimeLeft = blackTime;
         findViewsByIds();
-        setTimers();
+        setUI();
     }
     private void findViewsByIds(){
         whiteLL = findViewById(R.id.whiteLL);
-        whiteLL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleWhiteTimer();
-            }
-        });
         blackLL = findViewById(R.id.blackLL);
-        blackLL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleBlackTimer();
-            }
-        });
         whiteTV = findViewById(R.id.whiteTV);
         blackTV = findViewById(R.id.blackTV);
     }
-    private void setTimers(){
-        whiteTimer = new CountDownTimer(3605000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                whiteTimeLeft =  millisUntilFinished;
-                whiteTV.setText(getTime((int) (millisUntilFinished/1000)));
+    private void setUI(){
+        whiteLL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    onClickWhiteTimer();
             }
-            public void onFinish() {
+        });
+        blackLL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    onClickBlackTimer();
             }
-        };
-        blackTimer = new CountDownTimer(3605000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                blackTimeLeft = millisUntilFinished;
-                blackTV.setText(getTime((int) (millisUntilFinished/1000)));
-            }
-            public void onFinish() {
-            }
-        };
-        whiteTimer.start();
-        blackTimer.start();
+        });
+        whiteTV.setText(String.valueOf(getTime((int) (whiteTimeLeft/1000))));
+        blackTV.setText(String.valueOf(getTime((int) (blackTimeLeft/1000))));
     }
     private String getTime(int timeSeconds){
         String time;
@@ -76,35 +61,38 @@ public class MainActivity extends AppCompatActivity {
         time = hours+":"+minutes+":"+seconds;
         return time;
     }
-    private void toggleWhiteTimer(){
-        if(whitePaused){
-            whiteTimer = new CountDownTimer(whiteTimeLeft, 1000) {
-                public void onTick(long millisUntilFinished) {
-                    whiteTimeLeft =  millisUntilFinished;
-                    whiteTV.setText(getTime((int) (millisUntilFinished/1000)));
-                }
-                public void onFinish() {
-                }
-            }.start();
-        }else{
-            whiteTimer.cancel();
-        }
-        whitePaused = !whitePaused;
+    private void whiteCounter(){
+        whiteTimer = new CountDownTimer(whiteTimeLeft, 1000) {
+            public void onTick(long millisUntilFinished) {
+                whiteTimeLeft =  millisUntilFinished;
+                whiteTV.setText(getTime((int) (millisUntilFinished/1000)));
+            }
+            public void onFinish() {
+            }
+        }.start();
     }
-    private void toggleBlackTimer(){
-        if(blackPaused){
-            blackTimer = new CountDownTimer(blackTimeLeft, 1000) {
-                public void onTick(long millisUntilFinished) {
-                    blackTimeLeft =  millisUntilFinished;
-                    blackTV.setText(getTime((int) (millisUntilFinished/1000)));
-                }
-                public void onFinish() {
-                }
-            }.start();
+    private void blackCounter(){
+        blackTimer = new CountDownTimer(blackTimeLeft, 1000) {
+            public void onTick(long millisUntilFinished) {
+                blackTimeLeft =  millisUntilFinished;
+                blackTV.setText(getTime((int) (millisUntilFinished/1000)));
+            }
+            public void onFinish() {
+            }
+        }.start();
+    }
+    private void onClickWhiteTimer(){
+        if(!timeStarted) return;
+        whiteTimer.cancel();
+        blackCounter();
+    }
+    private void onClickBlackTimer() {
+        if (!timeStarted){
+            whiteCounter();
+            timeStarted = true;
         }else{
             blackTimer.cancel();
+            whiteCounter();
         }
-        blackPaused = !blackPaused;
     }
-
 }
