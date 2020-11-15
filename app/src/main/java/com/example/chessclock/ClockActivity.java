@@ -2,29 +2,32 @@ package com.example.chessclock;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class ClockActivity extends AppCompatActivity {
 
+    ImageView backIV;
     Button resetButton, pauseButton;
     LinearLayout whiteLL, blackLL;
     TextView whiteTV, blackTV;
     CountDownTimer whiteTimer, blackTimer;
-    long whiteTime=70000, blackTime=70000, whiteTimeLeft, blackTimeLeft;
-    boolean timeStarted, pausedAll, whitePaused, blackPaused;
+    long whiteTime=70000, blackTime=70000, whiteTimeLeft, blackTimeLeft,
+            whiteAdd=7000, blackAdd=7000;
+    boolean timeStarted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_clock);
         Objects.requireNonNull(getSupportActionBar()).hide();
         whiteTimeLeft = whiteTime;
         blackTimeLeft = blackTime;
@@ -32,8 +35,9 @@ public class MainActivity extends AppCompatActivity {
         setUI();
     }
     private void findViewsByIds(){
+        backIV = findViewById(R.id.backIV);
         resetButton = findViewById(R.id.resetButton);
-        pauseButton = findViewById(R.id.pauseButton);
+        //pauseButton = findViewById(R.id.pauseButton);
         whiteLL = findViewById(R.id.whiteLL);
         blackLL = findViewById(R.id.blackLL);
         whiteTV = findViewById(R.id.whiteTV);
@@ -43,13 +47,13 @@ public class MainActivity extends AppCompatActivity {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                reset();
+                onBackPressed();
             }
         });
-        pauseButton.setOnClickListener(new View.OnClickListener() {
+        resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pause();
+                reset();
             }
         });
         whiteLL.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         return time;
     }
     private void whiteCounter(){
-        whiteTimer = new CountDownTimer(whiteTimeLeft, 1000) {
+        whiteTimer = new CountDownTimer(whiteTimeLeft+whiteAdd, 1000) {
             public void onTick(long millisUntilFinished) {
                 whiteTimeLeft =  millisUntilFinished;
                 whiteTV.setText(getTime((int) (millisUntilFinished/1000)));
@@ -92,15 +96,15 @@ public class MainActivity extends AppCompatActivity {
             public void onFinish() {
             }
         }.start();
-        pausedAll = false;
+        /*pausedAll = false;
         blackPaused = true;
-        whitePaused = false;
+        whitePaused = false;*/
         whiteLL.setBackgroundColor(getColor(R.color.dark_grey));
         blackLL.setBackgroundColor(getColor(R.color.light_grey));
         pauseButton.setBackgroundColor(getColor(R.color.dark_grey));
     }
     private void blackCounter(){
-        blackTimer = new CountDownTimer(blackTimeLeft, 1000) {
+        blackTimer = new CountDownTimer(blackTimeLeft+blackAdd, 1000) {
             public void onTick(long millisUntilFinished) {
                 blackTimeLeft =  millisUntilFinished;
                 blackTV.setText(getTime((int) (millisUntilFinished/1000)));
@@ -110,16 +114,16 @@ public class MainActivity extends AppCompatActivity {
             public void onFinish() {
             }
         }.start();
-        pausedAll = false;
+        /*pausedAll = false;
         blackPaused = false;
-        whitePaused = true;
+        whitePaused = true;*/
         blackLL.setBackgroundColor(getColor(R.color.dark_grey));
         whiteLL.setBackgroundColor(getColor(R.color.light_grey));
         pauseButton.setBackgroundColor(getColor(R.color.dark_grey));
     }
     private void onClickWhiteTimer(){
         if(!timeStarted) return;
-        if(whitePaused && !blackPaused) return;
+        //if(whitePaused && !blackPaused) return;
         if(whiteTimer!=null) whiteTimer.cancel();
         blackCounter();
     }
@@ -128,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             whiteCounter();
             timeStarted = true;
         }else{
-            if(blackPaused && !whitePaused) return;
+            //if(blackPaused && !whitePaused) return;
             if(blackTimer!=null)blackTimer.cancel();
             whiteCounter();
         }
@@ -142,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         setUI();
         timeStarted = false;
     }
-    private void pause(){
+    /*private void pause(){
         if(pausedAll) return;
         if(blackPaused && !whitePaused && (whiteTimer!=null)){
             whiteTimer.cancel();
@@ -159,5 +163,10 @@ public class MainActivity extends AppCompatActivity {
         }
         pausedAll = true;
         pauseButton.setBackgroundColor(getColor(R.color.light_grey));
+    }*/
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(getApplicationContext(), SetClockActivity.class));
     }
 }
