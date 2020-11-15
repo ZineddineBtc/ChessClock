@@ -5,16 +5,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+    Button resetButton;
     LinearLayout whiteLL, blackLL;
     TextView whiteTV, blackTV;
     CountDownTimer whiteTimer, blackTimer;
     long whiteTime=70000, blackTime=70000, whiteTimeLeft, blackTimeLeft;
-    boolean timeStarted, whiteBlack; // white=0, black=1
+    boolean timeStarted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +28,19 @@ public class MainActivity extends AppCompatActivity {
         setUI();
     }
     private void findViewsByIds(){
+        resetButton = findViewById(R.id.resetButton);
         whiteLL = findViewById(R.id.whiteLL);
         blackLL = findViewById(R.id.blackLL);
         whiteTV = findViewById(R.id.whiteTV);
         blackTV = findViewById(R.id.blackTV);
     }
     private void setUI(){
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reset();
+            }
+        });
         whiteLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,5 +103,13 @@ public class MainActivity extends AppCompatActivity {
             blackTimer.cancel();
             whiteCounter();
         }
+    }
+    private void reset(){
+        whiteTimer.cancel();
+        blackTimer.cancel();
+        whiteTimeLeft = whiteTime;
+        blackTimeLeft = blackTime;
+        setUI();
+        timeStarted = false;
     }
 }
