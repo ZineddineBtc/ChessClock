@@ -16,7 +16,6 @@ import java.util.Objects;
 public class ClockActivity extends AppCompatActivity {
 
     ImageView backIV;
-    Button resetButton;
     LinearLayout whiteLL, blackLL;
     TextView incrementTV, whiteTV, blackTV;
     CountDownTimer whiteTimer, blackTimer;
@@ -43,7 +42,6 @@ public class ClockActivity extends AppCompatActivity {
     }
     private void findViewsByIds(){
         backIV = findViewById(R.id.backIV);
-        resetButton = findViewById(R.id.resetButton);
         incrementTV = findViewById(R.id.incrementTV);
         whiteLL = findViewById(R.id.whiteLL);
         blackLL = findViewById(R.id.blackLL);
@@ -55,18 +53,6 @@ public class ClockActivity extends AppCompatActivity {
         int b = (int) (blackIncrement/1000);
         String increments = "White: +"+w+"s | Black: +"+b+"s";
         incrementTV.setText(increments);
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                reset();
-            }
-        });
         backIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,7 +72,9 @@ public class ClockActivity extends AppCompatActivity {
             }
         });
         whiteTV.setText(String.valueOf(getTime((int) (whiteTimeLeft/1000))));
+        whiteLL.setBackgroundColor(getColor(R.color.light_grey));
         blackTV.setText(String.valueOf(getTime((int) (blackTimeLeft/1000))));
+        blackLL.setBackgroundColor(getColor(R.color.dark_grey));
     }
     private String getTime(int timeSeconds){
         String time;
@@ -130,7 +118,8 @@ public class ClockActivity extends AppCompatActivity {
         blackLL.setBackgroundColor(getColor(R.color.dark_grey));
         whiteLL.setBackgroundColor(getColor(R.color.light_grey));
     }
-    private void onClickWhiteTimer(){
+    private void onClickWhiteTimer() {
+        if(whiteTimeLeft==0 || blackTimeLeft==0) return;
         if(!timeStarted) return;
         if(whiteTimer!=null) {
             whiteTimer.cancel();
@@ -140,6 +129,7 @@ public class ClockActivity extends AppCompatActivity {
         blackCounter();
     }
     private void onClickBlackTimer() {
+        if(whiteTimeLeft==0 || blackTimeLeft==0) return;
         if (!timeStarted){
             whiteCounter();
             timeStarted = true;
@@ -152,9 +142,9 @@ public class ClockActivity extends AppCompatActivity {
             whiteCounter();
         }
     }
-    private void reset(){
-        whiteTimer.cancel();
-        blackTimer.cancel();
+    public void reset(View view){
+        if(whiteTimer!=null) whiteTimer.cancel();
+        if(blackTimer!=null) blackTimer.cancel();
         whiteTimeLeft = whiteTime;
         blackTimeLeft = blackTime;
         setUI();
